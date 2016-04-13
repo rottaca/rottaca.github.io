@@ -1,36 +1,72 @@
 /*
-	Identity by HTML5 UP
+	Future Imperfect by HTML5 UP
 	html5up.net | @n33co
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 */
 
-/* List */
+/* Button */
 
-	ul.icons li a {
-		-ms-behavior: url("assets/js/PIE.htc");
+	input[type="submit"],
+	input[type="reset"],
+	input[type="button"],
+	button,
+	.button {
+		border: solid 1px #dedede;
 	}
 
-		ul.icons li a:before {
-			text-align: center;
-			font-size: 26px;
+/* Form */
+
+	input[type="text"],
+	input[type="password"],
+	input[type="email"],
+	input[type="tel"],
+	select,
+	textarea {
+		border: solid 1px #dedede;
+	}
+
+/* Post */
+
+	.post {
+		border: solid 1px #dedede;
+	}
+
+		.post > header {
+			border-bottom: solid 1px #dedede;
 		}
 
-/* Main */
+/* Mini Post */
 
-	#main {
-		-ms-behavior: url("assets/js/PIE.htc");
+	.mini-post {
+		border: solid 1px #dedede;
 	}
 
-		#main .avatar img {
-			-ms-behavior: url("assets/js/PIE.htc");
+/* Header */
+
+	#header {
+		border-bottom: solid 1px #dedede;
+	}
+
+		#header .links {
+			border-left: solid 1px #dedede;
 		}
 
-/* Footer */
+		#header .main ul li {
+			border-left: solid 1px #dedede;
+		}
 
-	#footer {
-		color: #fff;
+/* Sidebar */
+
+	#sidebar > * {
+		border-top: solid 1px #dedede;
 	}
 
-		#footer .copyright li {
-			border-left: solid 1px #fff;
+/* Menu */
+
+	#menu {
+		border-left: solid 1px #dedede;
+	}
+
+		#menu > * {
+			border-top: solid 1px #dedede;
 		}

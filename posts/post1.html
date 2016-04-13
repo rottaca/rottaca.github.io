@@ -1,0 +1,140 @@
+<!DOCTYPE HTML>
+<!--
+	Andreas Rottach by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Andreas Rottach</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="../assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="../assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="../assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="../assets/css/ie8.css" /><![endif]-->
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<h1><a href="../index.html">Andreas Rottach</a></h1>
+						<nav class="links">
+							<ul>
+								<li><a href="../topics/topic1.html">Software Development</a></li>
+								<li><a href="../topics/topic2.html">3D Printing</a></li>
+							</ul>
+						</nav>
+					</header>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<article class="post">
+								<header>
+									<div class="title">
+										<h2><a href="../posts/post1.html">3D-Scanner Part 1</a></h2>
+										<p>First Tests and Software Development</p>
+									</div>
+									<div class="meta">
+										<time class="published" datetime="2015-11-01">November 1, 2015</time>
+										<a href="../#" class="author"><span class="name">Andreas Rottach</span><img src="../images/avatar.jpg" alt="" /></a>
+									</div>
+								</header>
+								<a href="../#" class="image featured"><img src="../images/fullres/dismantledCam.png" alt="" /></a>
+								<p> My 3D Scanner project consists of a hardware platform and a software part. It is based on cheap usb webcams, 
+									a small rotatable platform and a microcotroller that is controlled by the computer. 
+									In the future it will be able to transform small realworld objects into 3d pointclouds. 
+									The software is based on my computer vision library FreeCV and uses Qt.</p>
+								<h2>The First Test Platform</h2>
+
+								<a href="../images/fullres/c210.png"><img src="../images/lowres/c210.png" alt="logitec c210 webcam" ></a>
+								<a href="../images/fullres/dismantledCam.png"><img src="../images/lowres/dismantledCam.png" alt="dismanteled webcams"></a>
+								<a href="../images/fullres/testHW2.png"><img src="../images/lowres/testHW2.png" alt="mounted webcams"></a>
+								<a href="../images/fullres/testHW.png"><img src="../images/lowres/testHW.png" alt="mounted webcams"></a>
+								<!--<a href="../images/fullres/testHW3.png"><img src="../images/lowres/testHW3.png" alt="mounted webcams" class="clearFloat inlineImgLeft"></a>-->
+								<p class = "text">
+									Currently I am using two cheap Logitec C210 webcams (image from Amazon) for about 9.99 Euro each from ebay. They don't provide the best quality and have a maximum resolution of 640 x 480 but they are quite good enought for testing. <br>
+									For my first tests of the stereo algorithm I've dismanteled the housing of the webcams. This is really easy. Remove the screws on the back to open the wecam. There are two smaller screw that hold the circut on the housing. I removed it and destroyed the housing to get out the cables of the webcam. Now I've got the raw hardware of my webcams and I was able to mount them on a aluminium suqare stick in parallel. To get a stable platform I've used some hotglue to fix the webcam rig on a platform that lets the camera face down to the ground with an angle of about 45 degrees. This system is only used for testing purposes. 
+								</p>
+								<h2>Software</h2>
+								<p class = "text">
+									I've first implemented a command line tool, that grabs a stereo image and calculates a disparity map and a pointcloud by using my computervision library FreeCV. This works really good but currently is really slow because is only uses a single cpu core to calculate the disparity map. In the future I will try to port it to cuda. But the next step is to implement a userinterface to control the software system. I will use Qt to implement that but this is much more painfull task that implementing the small commandline tool so it will take much longer to do that. We will see..
+								</p>
+
+								<p class = "text">
+									In the following sections I will describe the major parts of this software system: The disparity map calculation, the point cloud generation and the point cloud registration.
+									The image grabbing and conversation from YUYV to RGB/Grayscale is less interesting here.
+								</p>
+
+								<h3>Disparity Map calculation</h3>
+									<a href="../images/fullres/sgmExample.png"><img src="../images/lowres/sgmExample.png" alt="SGM example"  class="inlineImgLeft"></a>
+								<p class = "text">
+									To calculate the disparity map, I've implemented a stereo matching algorithm that is called semi global matching (SGM) from Heiko Hirschmüller. It is widely used becuase it provides a good ratio between processing time and quality (See the image on the left). 
+								</p> 
+								<p class = "text">
+									It tries to minimize the output of a cost function for each pixel along 8 or 16 lines across the image. As cost function I've used a simple intensity based cost function that is represented by the intensity difference between two pixels. Cost functions like mutual information, proposed by Hirschmüller give slightly better results, but I don't think it's worth to implement it. For more information, consult Heiko's elaborations on SGM.
+								</p>
+								<h3>Point cloud generation</h3>
+									<a href="../images/fullres/pointCloud.png"><img src="../images/lowres/pointCloud.png" alt="Point cloud example"  class="inlineImgLeft"></a>
+								<p class = "text">
+									The point cloud generation is really easy. The only thing that you have to know is the cameras intrinsic and extrinsic parameters. In the example picture on the left side, I only used some example intrinisc parameter and no extrinsic ones because the data set does not provide a camera calibration. But for testing purposed it was okay. The full calulation process to get from 2D disparty map to 3D points is described here: <span style="font-weight: bold;"><a href="https://www.ptgrey.com/KB/10102">PointGray Knowledge Base</a></span>. 
+								</p>
+								<p class = "text">
+									To get from camera coodinates to world coodinates you have to multiply each point of the calculated pointcloud with a transformation matrix. The transformation matrix is the matrix that describes the camera position and orientation in the world. Now you have your reconstructed scene.
+								</p>
+								<h3>The final step - the point cloud registration</h3>
+								<p class = "text">
+									To get a full reconstructed scene, we have to take images while we move the camera around the object that we want to reconstruct. When we know the exact camera position for each viewing direction, we are able to merge the differnt point clouds to get a full reconstructed object. The problem is, that we never know the camera position exact enough (because of noise and so one...). To fix this issue, we have to do point cloud registration. This technique takes two pointcloud and it transforms the second pountcloud in such a way, that they fit perfectly together. The most widely used algorithm is called iterative closest point (ICP). It tries to solve this problem by minimizing the sum of squared distances between the points in the two pointclouds iteratively. I don't know if I am able to implement that algorithm by my own. We will see.
+								</p>
+
+							</article>
+
+					</div>
+
+				<!-- Sidebar -->
+					<section id="sidebar">
+
+						<!-- Intro -->
+							<section id="intro">
+								<a href="../#" class="avatar"><img src="../images/avatar.jpg" alt="" /></a>
+								<header>
+									<h2>Andreas Rottach</h2>
+									<p>Computer Science Student at University of Ulm</p>
+								</header>
+							</section>
+
+
+						<!-- About -->
+							<section class="blurb">
+								<h2>About</h2>
+								<p>I am a Computer Science Student at the University of Ulm in Germany. I love coding and in particular Computer Vision! Other topics are Microcontroller Programming with AVR microcontroller and Robotics in general!</p>
+							</section>
+
+						<!-- Footer -->
+							<section id="footer">
+								<ul class="icons">
+									<li><a href="../https://github.com/rottaca" class="fa-github">Github</a></li>
+									<li><a href="../http://stackoverflow.com/users/5543051/rottaca" class="fa-stack-overflow">Stackoverflow</a></li>
+									<li><a href="../https://www.facebook.com/andreas.rottach1" class="fa-facebook">Facebook</a></li>
+								</ul>
+								<p class="copyright">&copy; Untitled. Design: <a href="../http://html5up.net">HTML5 UP</a>. Images: <a href="../http://unsplash.com">Unsplash</a>.</p>
+							</section>
+
+					</section>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="../assets/js/jquery.min.js"></script>
+			<script src="../assets/js/skel.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="../assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="../assets/js/main.js"></script>
+
+	</body>
+</html>
