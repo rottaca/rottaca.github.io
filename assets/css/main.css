@@ -114,6 +114,12 @@
 			display: none;
 		}
 
+		.fa-thingiverse:before {
+		        font-family: roboto;
+		        color: #ffffff;
+		        font-size: 1.2em;
+		        content: "T";   #any letter of your choice
+		}
 /* Wrapper */
 
 	@-moz-keyframes wrapper {
